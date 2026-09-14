@@ -1,21 +1,14 @@
 // Cloudflare Workers 入口（只导出 Hono app）
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { listOrders, saveOrder, getOrder } from './store.js'
+import { listOrders, saveOrder, getOrder, getSales, incrementSales } from './store.js'
 
 const CATEGORIES = [
-  { id: 'hot', name: '热销推荐', icon: '🔥' },
-  { id: 'mj', name: 'mj 菜', icon: '👨‍🍳' }
+  { id: 'beer', name: '啤酒', icon: '🍺' }
 ]
 
 const DISHES = [
-  { id: 1, name: '宫保鸡丁', price: 38, category: 'hot', desc: '经典川菜，鸡肉鲜嫩，花生酥脆', img: '🍗', sales: 1280 },
-  { id: 2, name: '麻婆豆腐', price: 28, category: 'hot', desc: '麻辣鲜香，豆腐嫩滑入味', img: '🥘', sales: 980 },
-  { id: 3, name: '红烧肉', price: 48, category: 'hot', desc: '肥而不腻，入口即化', img: '🍖', sales: 1560 },
-  { id: 101, name: 'mj 秘制小龙虾', price: 88, category: 'mj', desc: '十三香秘制，麻鲜入味', img: '🦞', sales: 680 },
-  { id: 102, name: 'mj 招牌炒饭', price: 26, category: 'mj', desc: '独门配方，粒粒分明', img: '🍛', sales: 520 },
-  { id: 103, name: 'mj 手打牛肉丸', price: 45, category: 'mj', desc: '手工捶打，Q弹多汁', img: '🥩', sales: 390 },
-  { id: 104, name: 'mj 家传酸梅汤', price: 15, category: 'mj', desc: '古法熬制，冰爽解腻', img: '🥤', sales: 740 }
+  { id: 1, name: '啤酒', price: 10, category: 'beer', desc: '冰爽啤酒，畅饮无限', img: '🍺', sales: 0 }
 ]
 
 function ok(c, data) { return c.json({ code: 0, message: 'success', data }) }
@@ -29,13 +22,17 @@ root.get('/', (c) => c.text('Food Ordering API'))
 const api = new Hono()
 api.use('*', cors())
 
-api.get('/health', (c) => ok(c, { status: 'ok', version: '2.0.0', platform: c.env?.ORDERS_KV ? 'cloudflare-workers' : 'node-local' }))
+api.get('/health', (c) => ok(c, { status: 'ok', version: '3.0.0', platform: c.env?.ORDERS_KV ? 'cloudflare-workers' : 'node-local' }))
 api.get('/dishes/categories', (c) => ok(c, CATEGORIES))
 
-api.get('/dishes', (c) => {
-  let list = [...DISHES]
+api.get('/dishes', async (c) => {
   const category = c.req.query('category')
   let keyword = c.req.query('keyword')
+
+  // 动态销量：从 KV / JSON 读
+  const salesMap = await getSales(c.env)
+  let list = DISHES.map(d => ({ ...d, sales: salesMap[d.id] ?? d.sales }))
+
   if (keyword) {
     try { keyword = decodeURIComponent(escape(atob(keyword))) } catch {}
     list = list.filter(d => d.name.includes(keyword) || d.desc.includes(keyword))
@@ -52,6 +49,14 @@ api.post('/orders', async (c) => {
   const orderNo = 'ORD' + Date.now()
   const totalAmount = items.reduce((s, i) => s + i.price * i.quantity, 0)
   const order = { orderNo, totalAmount, status: 'pending', createdAt: new Date().toISOString(), items }
+
+  // 累加销量（每个菜品的 quantity 累加上去）
+  for (const it of items) {
+    if (it.id != null && it.quantity) {
+      await incrementSales(c.env, it.id, it.quantity)
+    }
+  }
+
   await saveOrder(c.env, orderNo, order)
   return ok(c, order)
 })

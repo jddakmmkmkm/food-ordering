@@ -40,5 +40,33 @@
         "quantity": 2
       }
     ]
+  },
+  "ORD1789394270501": {
+    "orderNo": "ORD1789394270501",
+    "totalAmount": 50,
+    "status": "pending",
+    "createdAt": "2026-09-14T13:57:50.501Z",
+    "items": [
+      {
+        "id": 1,
+        "name": "啤酒",
+        "price": 10,
+        "quantity": 5
+      }
+    ]
+  },
+  "ORD1789394270534": {
+    "orderNo": "ORD1789394270534",
+    "totalAmount": 30,
+    "status": "pending",
+    "createdAt": "2026-09-14T13:57:50.534Z",
+    "items": [
+      {
+        "id": 1,
+        "name": "啤酒",
+        "price": 10,
+        "quantity": 3
+      }
+    ]
   }
 }

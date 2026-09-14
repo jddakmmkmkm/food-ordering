@@ -59,3 +59,36 @@ export async function getOrder(env, orderNo) {
   const all = JSON.parse(_fs.readFileSync(dataFile, 'utf8'))
   return all[orderNo] || null
 }
+
+// ========== 销量（KV / JSON）==========
+const SALES_KEY = 'sales'
+
+async function ensureSalesFile() {
+  await loadFs()
+  const dataDir = _path.join(_dirname, '..', 'data')
+  const salesFile = _path.join(dataDir, 'sales.json')
+  if (!_fs.existsSync(dataDir)) _fs.mkdirSync(dataDir, { recursive: true })
+  if (!_fs.existsSync(salesFile)) _fs.writeFileSync(salesFile, '{}')
+  return salesFile
+}
+
+export async function getSales(env) {
+  if (env?.ORDERS_KV) {
+    const v = await env.ORDERS_KV.get(SALES_KEY)
+    return v ? JSON.parse(v) : {}
+  }
+  const salesFile = await ensureSalesFile()
+  return JSON.parse(_fs.readFileSync(salesFile, 'utf8'))
+}
+
+export async function incrementSales(env, dishId, amount) {
+  const sales = await getSales(env)
+  sales[dishId] = (sales[dishId] || 0) + amount
+  if (env?.ORDERS_KV) {
+    await env.ORDERS_KV.put(SALES_KEY, JSON.stringify(sales))
+  } else {
+    const salesFile = await ensureSalesFile()
+    _fs.writeFileSync(salesFile, JSON.stringify(sales, null, 2))
+  }
+  return sales[dishId]
+}
