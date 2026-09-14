@@ -1,5 +1,5 @@
 name = "food-ordering-api"
-main = "src/index.js"
+main = "src/app.js"
 compatibility_date = "2025-09-01"
 
 kv_namespaces = [

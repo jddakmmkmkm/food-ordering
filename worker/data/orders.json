@@ -1,0 +1,44 @@
+{
+  "ORD1789392662205": {
+    "orderNo": "ORD1789392662205",
+    "totalAmount": 76,
+    "status": "pending",
+    "createdAt": "2026-09-14T13:31:02.205Z",
+    "items": [
+      {
+        "id": 1,
+        "name": "宫保鸡丁",
+        "price": 38,
+        "quantity": 2
+      }
+    ]
+  },
+  "ORD1789392757480": {
+    "orderNo": "ORD1789392757480",
+    "totalAmount": 28,
+    "status": "pending",
+    "createdAt": "2026-09-14T13:32:37.480Z",
+    "items": [
+      {
+        "id": 2,
+        "name": "麻婆豆腐",
+        "price": 28,
+        "quantity": 1
+      }
+    ]
+  },
+  "ORD1789393126095": {
+    "orderNo": "ORD1789393126095",
+    "totalAmount": 76,
+    "status": "pending",
+    "createdAt": "2026-09-14T13:38:46.095Z",
+    "items": [
+      {
+        "id": 1,
+        "name": "宫保鸡丁",
+        "price": 38,
+        "quantity": 2
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "food-ordering-api",
+  "version": "2.0.0",
+  "description": "点餐系统后端 - 同时支持 Cloudflare Workers 和本地 Node.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "hono": "^4.13.7"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

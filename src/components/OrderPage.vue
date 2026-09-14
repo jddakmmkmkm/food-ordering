@@ -4,7 +4,7 @@
     <header class="header">
       <div class="header-left">
         <span class="logo">🍜</span>
-        <h1 class="title">美味点餐</h1>
+        <h1 class="title">mj 点餐</h1>
         <n-tag size="small" type="success" round>营业中</n-tag>
       </div>
       <div class="header-right">
