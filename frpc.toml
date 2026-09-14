@@ -1,0 +1,15 @@
+serverAddr = "frp.freefrp.net"
+serverPort = 7000
+auth.method = "token"
+auth.token = "freefrp.net"
+loginFailExit = false
+
+transport.protocol = "websocket"
+transport.proxyURL = "http://127.0.0.1:18080"
+
+[[proxies]]
+name = "order-web-5173"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 5173
+remotePort = 10001
