@@ -1,0 +1,7 @@
+name = "food-ordering-api"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+kv_namespaces = [
+  { binding = "ORDERS_KV", id = "5ba5ad8ffbc14216b28be78afcb12729" }
+]
